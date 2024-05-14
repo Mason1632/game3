@@ -22,6 +22,7 @@
   let leftPaddleY = (canvas.height - paddleHeight) / 2, rightPaddleY = (canvas.height - paddleHeight) / 2;
   let ballX = canvas.width / 2, ballY = canvas.height / 2;
   let ballSpeedX = 5, ballSpeedY = 5;
+  let leftPaddleSpeed = 0, rightPaddleSpeed = 0;
 
   // Draw paddles
   function drawPaddle(x, y) {
@@ -38,6 +39,50 @@
     context.fill();
   }
 
+  // Control paddles
+  function movePaddle() {
+    leftPaddleY += leftPaddleSpeed;
+    rightPaddleY += rightPaddleSpeed;
+
+    // Prevent paddles from moving out of canvas
+    leftPaddleY = Math.max(Math.min(leftPaddleY, canvas.height - paddleHeight), 0);
+    rightPaddleY = Math.max(Math.min(rightPaddleY, canvas.height - paddleHeight), 0);
+  }
+
+  // Listen to keyboard events
+  function keyDownHandler(event) {
+    switch(event.key) {
+      case 'w':
+        leftPaddleSpeed = -7;
+        break;
+      case 's':
+        leftPaddleSpeed = 7;
+        break;
+      case 'ArrowUp':
+        rightPaddleSpeed = -7;
+        break;
+      case 'ArrowDown':
+        rightPaddleSpeed = 7;
+        break;
+    }
+  }
+
+  function keyUpHandler(event) {
+    switch(event.key) {
+      case 'w':
+      case 's':
+        leftPaddleSpeed = 0;
+        break;
+      case 'ArrowUp':
+      case 'ArrowDown':
+        rightPaddleSpeed = 0;
+        break;
+    }
+  }
+
+  document.addEventListener('keydown', keyDownHandler);
+  document.addEventListener('keyup', keyUpHandler);
+
   // Game loop
   function gameLoop() {
     // Move the ball
@@ -52,6 +97,9 @@
         ballX - 10 < paddleWidth && ballY > leftPaddleY && ballY < leftPaddleY + paddleHeight) {
       ballSpeedX = -ballSpeedX;
     }
+
+    // Move paddles
+    movePaddle();
 
     // Clear canvas
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -69,4 +117,3 @@
 </script>
 </body>
 </html>
-
